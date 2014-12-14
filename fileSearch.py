@@ -16,22 +16,23 @@ Inputs :
 
 import os,sys
 import shutil
-
+import time
 
 #INPUTS AND VALIDATIONS
 folderPath = raw_input("Enter the main directory to search : ")
 
-isDirPresent = os.path.isdir(filesDirectory)
+isDirPresent = os.path.isdir(folderPath)
 if(isDirPresent==False):
 	print "Error: Invalid directory, No such directory to search"
+	time.sleep(1.5)
 	print "Terminatting the program"
+	time.sleep(1)
 	sys.exit()
 
 folderPath = folderPath.replace('\\','/')
 if folderPath[-1] != '/':
 	folderPath = folderPath+'/'
 
-pdfs = []
 TO=raw_input("Enter the destination folder where the PDF's have to be stored : ")
 
 TO = TO.replace('\\','/')
@@ -39,35 +40,36 @@ TO = TO.replace('\\','/')
 if TO[-1] != '/':
 	TO = TO+'/'
 
-
-nameStartsWith = raw_input("Find files, having the word :  ")
-
 extension = raw_input("Enter the extension of the file you want to serach : ('csv' or 'pdf',etc...) ") 
-
 if extension[0]!='.':
 	extension = '.'+extension
 
+nameStartsWith = raw_input("Find files, having the word :  ")
+
+
+
 # END OF VALIDATIONS
+print "Proceesing the folder kindly be patient..."
 
-i=0;
+i=-1;
+
 for subdir, dirs, files in os.walk(folderPath):
-   for hasNext in subdir:
-        for file in files:
-            if extension in file:
-                pdfs.append(os.path.join(subdir, file))
-    i = i+1
+    for file in files:
+        if  (extension in file) and (nameStartsWith in file) :
+            fromPath = os.path.join(subdir, file)
+            shutil.copy2(fromPath, TO+file)
+            print "Copying : "+file+" to destination"
+    i=i+1       
 
-if(i=0):
+
+
+if i==0:
 	print "The directory is empty"
+	time.sleep(1.5)
 	print "Terminatting the program"
+	time.sleep(1)
 	sys.exit()
 
 
-for fileName in pdfs:
-    
-    if nameStartsWith in fileName :
-        temp = fileName.split('/')[-1]
-        shutil.copy2(fileName, TO+temp)
-        print "Transferred "+fileName+" to destination folder "
         
     
